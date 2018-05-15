@@ -1,25 +1,24 @@
 
-tl__setupEnvironment;
-global opt
+tl__SetupEnvironment;
 subj_code = 'VPtaa';
 ana = tl_ana_getTrialEvents(subj_code);
 BTB.FigPos = [55 4];
 
 %% SILENT INTERRUPTION
 %% distribution
-init_figure;
+tl_fig_init;
 t = ana.t_emg2sil(logical(ana.interrupted_silent));
 histogram(t,opt.fig.pred_edges)
 
 
 %% PHASE1 vs PHASE2
 %% movement duration difference
-init_figure; hold on
+tl_fig_init; hold on
 histogram(ana.t_emg2bp(logical(ana.trial_type==5)))
 histogram(ana.t_emg2bp(logical(ana.trial_type~=5)))
 
 %% difference RP
-init_figure;
+tl_fig_init;
 [mrk,cnt] = tl_proc_loadData(subj_code);
 ind1 = find(ana.trial_type==5&ana.emg_onset);
 mrk1 = tl_mrk_selectTrials(mrk,ind1,0);
@@ -37,7 +36,7 @@ plot_channel(erp,'Cz');
 
 %% GREEN MOVE
 %% movement-interruption for yes/no
-init_figure; hold on
+tl_fig_init; hold on
 t1 = ana.t_emg2int(logical(ana.trial_type==2&ana.yes&ana.prompted));
 t2 = ana.t_emg2int(logical(ana.trial_type==2&~ana.yes&ana.prompted));
 histogram(t1,opt.fig.pred_edges)
@@ -45,7 +44,7 @@ histogram(t2,opt.fig.pred_edges)
 legend('yes','no','location','west')
 
 %% movement duration for yes/no
-init_figure; hold on
+tl_fig_init; hold on
 t1 = ana.t_emg2bp(logical(ana.trial_type==2&ana.yes&ana.prompted));
 t2 = ana.t_emg2bp(logical(ana.trial_type==2&~ana.yes&ana.prompted));
 histogram(t1)
@@ -55,7 +54,7 @@ legend('yes','no','location','west')
 
 %% RED MOVE
 %% stopping movement
-init_figure; hold on
+tl_fig_init; hold on
 t1 = ana.t_emg2int(logical(ana.trial_type==1&ana.button_press));
 t2 = ana.t_emg2int(logical(ana.trial_type==1&~ana.button_press));
 histogram(t1,opt.fig.pred_edges)
@@ -63,7 +62,7 @@ histogram(t2,opt.fig.pred_edges)
 legend('finished','stopped','location','west')
 
 %% stopping movement
-init_figure; hold on
+tl_fig_init; hold on
 t1 = ana.t_emg2int(logical(ana.trial_type==1&ana.yes&ana.prompted));
 t2 = ana.t_emg2int(logical(ana.trial_type==1&~ana.yes&ana.prompted));
 histogram(t1,opt.fig.pred_edges)

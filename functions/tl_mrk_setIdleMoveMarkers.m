@@ -3,24 +3,21 @@ function mrk = tl_mrk_setIdleMoveMarkers(mrk)
 
 global opt
 
-mrk_ = mrk_selectClasses(mrk,'prediction');
-if not(isempty(mrk_.time))
-    error('Trials with predictions not allowed.')
-end
+mrk = tl_mrk_unifyMarkers(mrk,'start');
 
 switch opt.cfy.idle_mode
     case 'trial start'
-        mrk = mrk_selectClasses(mrk,'trial start','EMG');
+        mrk = mrk_selectClasses(mrk,'start all','EMG onset');
         mrk.className = {'Idle','Move'};
     case 'offset'
-        mrk1 = mrk_selectClasses(mrk,'EMG');
+        mrk1 = mrk_selectClasses(mrk,'EMG onset');
         mrk1.className = {'Move'};
         mrk2 = mrk1;
         mrk2.className = {'Idle'};
         mrk2.time = mrk2.time - opt.cfy.idle_offset;
         mrk = mrk_mergeMarkers(mrk1,mrk2);
     case 'optimal'
-        mrk1 = mrk_selectClasses(mrk,'trial start','EMG');
+        mrk1 = mrk_selectClasses(mrk,'start all','EMG onset');
         mrk1.className = {'Idle','Move'};        
         mrk2 = mrk_selectClasses(mrk1,'Move');
         mrk2.className = {'Idle'};

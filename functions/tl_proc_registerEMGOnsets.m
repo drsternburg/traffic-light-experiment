@@ -20,7 +20,7 @@ else
 end
 
 mrk2 = tl_mrk_unifyMarkers(mrk,cl_orig_ts,'start all');
-[mrk2,i_select] = tl_mrk_assembleTrials(mrk2,'all',{},{});
+[~,i_select] = tl_mrk_assembleTrials(mrk2,'all',{},{});
 
 i_ts = cellfun(@(v)v(1),i_select);
 i_te = cellfun(@(v)v(end),i_select);
@@ -36,7 +36,7 @@ sd_bsln = std(sd_bsln(:));
 
 %%
 if il>0
-    init_figure;
+    tl_fig_init;
     ylim = [-1 1]*max(abs(cnt.x));
     trial_events = ['button press' opt.mrk.def(2,7:11)];
     clrs = lines(length(trial_events)+1);

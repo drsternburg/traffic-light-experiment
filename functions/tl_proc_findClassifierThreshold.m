@@ -9,7 +9,7 @@ n_trials = length(cout);
 %% define possible threshold range
 x_all = cellfun(@(f)getfield(f,'x'),cout,'UniformOutput',false);
 x_all = [x_all{:}];
-thresh = linspace(prctile(x_all,5),max(x_all),300);
+thresh = linspace(prctile(x_all,5),max(x_all),500);
 
 %% find crossing times
 t_pr2emg = nan(n_trials,length(thresh));
@@ -55,7 +55,7 @@ if nargout~=0
 end
 
 %% show rates as a function of threshold
-init_figure(20,20);
+tl_fig_init(20,20);
 clrs = lines(7);
 
 subplot 211

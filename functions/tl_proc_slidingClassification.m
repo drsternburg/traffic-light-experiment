@@ -4,8 +4,6 @@ function cout = tl_proc_slidingClassification(cnt,mrk,C)
 global opt
 
 cnt = proc_selectChannels(cnt,opt.cfy.clab);
-
-mrk = mrk_selectClasses(mrk,'trial start','EMG','trial end');
 n_trial = sum(mrk.y(1,:));
 i_trial = reshape(1:length(mrk.time),3,n_trial);
 
