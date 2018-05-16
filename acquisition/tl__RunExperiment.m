@@ -40,8 +40,7 @@ t_ts2emg = tl_acq_quickInspection;
 
 %% Compute sliding classifier output, this might take a while...
 [mrk,cnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
-trials = tl_mrk_getTrialMarkers(mrk);
-mrk = tl_mrk_assembleTrials(mrk,'phase1');
+mrk = tl_mrk_selectTrials(mrk);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
 cout = tl_proc_slidingClassification(cnt,mrk);
 

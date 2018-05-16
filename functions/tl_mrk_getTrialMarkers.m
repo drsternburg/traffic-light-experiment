@@ -1,6 +1,8 @@
 
 function trial_mrk = tl_mrk_getTrialMarkers(mrk)
 
+global opt
+
 mrk = mrk_sortChronologically(mrk);
 mrk = tl_mrk_unifyMarkers(mrk,'start');
 ci_ts = find(strcmp(mrk.className,'start'));

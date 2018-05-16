@@ -7,7 +7,7 @@ global BTB
 
 %% prepare data
 [mrk,cnt,mnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
-mrk = tl_mrk_assembleTrials(mrk,'phase1');
+mrk = tl_mrk_selectTrials(mrk);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset'});
 
 %% cross-validation

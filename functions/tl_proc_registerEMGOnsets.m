@@ -12,9 +12,9 @@ cnt = proc_selectChannels(cnt,'EMG');
 cnt = proc_filtfilt(cnt,b,a);
 
 %% prepare markers
-[~,i_select] = tl_mrk_assembleTrials(mrk,'all',{},{});
-i_ts = cellfun(@(v)v(1),i_select);
-i_te = cellfun(@(v)v(end),i_select);
+trial_mrk = tl_mrk_getTrialMarkers(mrk);
+i_ts = cellfun(@(v)v(1),trial_mrk);
+i_te = cellfun(@(v)v(end),trial_mrk);
 n_trial = length(i_ts);
 
 %% compute average EMG signal in first 1000ms of all trials
@@ -45,10 +45,10 @@ while ii<=n_trial
     epo = proc_segmentation(cnt,mrk_selectEvents(mrk,i_ts(ii)),[0 t_te-t_ts]);
     
     % get time and name of events occurring within trial
-    ev_time = zeros(1,length(i_select{ii})-2);
-    ev_name = cell(1,length(i_select{ii})-2);
-    for jj = 2:length(i_select{ii})-1
-        mrk_ = mrk_selectEvents(mrk,i_select{ii}(jj));
+    ev_time = zeros(1,length(trial_mrk{ii})-2);
+    ev_name = cell(1,length(trial_mrk{ii})-2);
+    for jj = 2:length(trial_mrk{ii})-1
+        mrk_ = mrk_selectEvents(mrk,trial_mrk{ii}(jj));
         ev_time(jj-1) = mrk_.time - t_ts;
         ev_name(jj-1) = mrk_.className;
     end
@@ -135,8 +135,9 @@ mrk2.className = {'EMG onset'};
 mrk = mrk_mergeMarkers(mrk,mrk2);
 
 %% cleanup lost button presses
-[~,ind] = tl_mrk_assembleTrials(mrk,'all',{'button press'},{'EMG onset'});
-mrk = mrk_selectEvents(mrk,'not',ind);
+trials = tl_mrk_analyzeTrials(mrk);
+trial_mrk = tl_mrk_getTrialMarkers(mrk,trials.event.button_press&~trials.event.emg_onset);
+mrk = mrk_selectEvents(mrk,'not',[trial_mrk{:}]);
 fprintf('%d trials removed with lost button presses.\n',length(ind))
 
 %% save new marker struct

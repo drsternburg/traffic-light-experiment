@@ -1,5 +1,5 @@
 
-function trial = tl_ana_getTrialEventsAndTimes(subj_code)
+function trial = tl_mrk_analyzeTrials(mrk)
 % Extract non-EEG-related information from all trials.
 % trial.type  :   identifier for trial type
 %                 1 - move red
@@ -11,11 +11,9 @@ function trial = tl_ana_getTrialEventsAndTimes(subj_code)
 % trial.time  :   time difference between certain events
 
 %%
-trial.subj_code = subj_code;
-trial_type = {'move red','move green','idle red','idle green','phase1'};
-mrk = tl_proc_loadData(subj_code);
 trial_ind = tl_mrk_getTrialMarkers(mrk);
 N = length(trial_ind);
+trial_type = {'move red','move green','idle red','idle green','phase1'};
 
 %%
 for ii = 1:N
