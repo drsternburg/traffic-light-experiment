@@ -6,7 +6,12 @@ global opt
 mrk = mrk_sortChronologically(mrk);
 
 % markers
-ci_ts = find(strcmp(mrk.className,['start ' trial_type]));
+if strcmp(trial_type,'all')
+    mrk = tl_mrk_unifyMarkers(mrk,'start');
+    ci_ts = find(strcmp(mrk.className,'start'));
+else
+    ci_ts = find(strcmp(mrk.className,['start ' trial_type]));
+end
 ci_te = find(strcmp(mrk.className,'trial end'));
 ci_bp = find(strcmp(mrk.className,'button press'));
 
@@ -68,6 +73,8 @@ end
 %
 if not(strcmp(trial_type,'all'))
     fprintf('%d trials of type ''%s'' selected.\n',n_trial,trial_type)
+else
+    fprintf('All %d trials selected.\n',n_trial)
 end
 if not(isempty(i_select))
     mrk = mrk_selectEvents(mrk,[i_select{:}],'RemoveVoidClasses',0,'Sort',1);

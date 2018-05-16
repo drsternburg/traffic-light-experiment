@@ -10,18 +10,9 @@ mrk = mrk_selectClasses(mrk,'not','EMG onset','RemoveVoidClasses',0); % in case 
 cnt = proc_selectChannels(cnt,'EMG');
 [b,a] = butter(6,20/cnt.fs*2,'high');
 cnt = proc_filtfilt(cnt,b,a);
-%cnt.x = abs(cnt.x);
 
-%%
-if strcmp(phase_name,'Phase2')
-    cl_orig_ts = opt.mrk.def(2,3:6);
-else
-    cl_orig_ts = {'start silent'};
-end
-
-mrk2 = tl_mrk_unifyMarkers(mrk,cl_orig_ts,'start all');
-[~,i_select] = tl_mrk_assembleTrials(mrk2,'all',{},{});
-
+%% prepare markers
+[~,i_select] = tl_mrk_assembleTrials(mrk,'all',{},{});
 i_ts = cellfun(@(v)v(1),i_select);
 i_te = cellfun(@(v)v(end),i_select);
 n_trial = length(i_ts);
@@ -138,16 +129,13 @@ close gcf
 
 %% insert new markers
 t_emg(isnan(t_emg)) = [];
-clear mrk2
 mrk2.time = t_emg;
 mrk2.y = ones(1,length(t_emg));
 mrk2.className = {'EMG onset'};
 mrk = mrk_mergeMarkers(mrk,mrk2);
-mrk = mrk_sortChronologically(mrk);
 
 %% cleanup lost button presses
-mrk2 = tl_mrk_unifyMarkers(mrk,cl_orig_ts,'start all');
-[~,ind] = tl_mrk_assembleTrials(mrk2,'all',{'button press'},{'EMG onset'});
+[~,ind] = tl_mrk_assembleTrials(mrk,'all',{'button press'},{'EMG onset'});
 mrk = mrk_selectEvents(mrk,'not',ind);
 fprintf('%d trials removed with lost button presses.\n',length(ind))
 

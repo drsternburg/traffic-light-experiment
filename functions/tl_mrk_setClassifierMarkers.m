@@ -1,5 +1,5 @@
 
-function mrk = tl_mrk_setIdleMoveMarkers(mrk)
+function mrk = tl_mrk_setClassifierMarkers(mrk)
 
 global opt
 
@@ -7,7 +7,7 @@ mrk = tl_mrk_unifyMarkers(mrk,'start');
 
 switch opt.cfy.idle_mode
     case 'trial start'
-        mrk = mrk_selectClasses(mrk,'start all','EMG onset');
+        mrk = mrk_selectClasses(mrk,'start','EMG onset');
         mrk.className = {'Idle','Move'};
     case 'offset'
         mrk1 = mrk_selectClasses(mrk,'EMG onset');
@@ -17,7 +17,7 @@ switch opt.cfy.idle_mode
         mrk2.time = mrk2.time - opt.cfy.idle_offset;
         mrk = mrk_mergeMarkers(mrk1,mrk2);
     case 'optimal'
-        mrk1 = mrk_selectClasses(mrk,'start all','EMG onset');
+        mrk1 = mrk_selectClasses(mrk,'start','EMG onset');
         mrk1.className = {'Idle','Move'};        
         mrk2 = mrk_selectClasses(mrk1,'Move');
         mrk2.className = {'Idle'};
@@ -27,7 +27,7 @@ switch opt.cfy.idle_mode
         mrk2.time = mrk2.time - opt.cfy.idle_offset;        
         mrk = mrk_mergeMarkers(mrk1,mrk2);
     otherwise
-        error('unkown idle class mode')
+        error('Unknown idle class mode')
 end
 
 mrk = mrk_sortChronologically(mrk);

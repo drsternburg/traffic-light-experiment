@@ -1,5 +1,7 @@
 
 function t_ts2emg = tl_acq_quickInspection
+% Performs a quick inspection of recorded Phase1 data and returns the
+% waiting times
 
 global BTB
 

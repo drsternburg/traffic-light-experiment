@@ -1,6 +1,6 @@
 
 %% setup environment
-tl__setupEnvironment;
+tl__SetupEnvironment;
 global opt
 warning off
 
@@ -9,7 +9,7 @@ acq_makeDataFolder;
 
 %% Start BrainVision Recorder and load workspace
 system('C:\Vision\Recorder\Recorder.exe &'); pause(8);
-bvr_sendcommand('loadworkspace',opt.bv_workspace);
+bvr_sendcommand('loadworkspace',opt.eeg.bv_workspace);
 bvr_sendcommand('stoprecording'); % assert that no previous session is running
 
 %% EEG impedance check
@@ -31,7 +31,7 @@ tl_acq_startRecording('Phase1',bbci)
 
 %% Preprocess
 filename = [BTB.Tp.Dir(17:end) '\' basename BTB.Tp.Code];
-tl_proc_convertBVData(filename,opt);
+tl_proc_convertBVData(filename);
 tl_mrk_initialCleanup(BTB.Tp.Code,'Phase1');
 tl_proc_registerEMGOnsets(BTB.Tp.Code,'Phase1',0)
 
@@ -40,6 +40,7 @@ t_ts2emg = tl_acq_quickInspection;
 
 %% Compute sliding classifier output, this might take a while...
 [mrk,cnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
+trials = tl_mrk_getTrialMarkers(mrk);
 mrk = tl_mrk_assembleTrials(mrk,'phase1');
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
 cout = tl_proc_slidingClassification(cnt,mrk);

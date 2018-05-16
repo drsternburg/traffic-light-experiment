@@ -9,7 +9,7 @@ acq_makeDataFolder;
 
 %% Start BrainVision Recorder and load workspace
 system('C:\Vision\Recorder\Recorder.exe &'); pause(8);
-bvr_sendcommand('loadworkspace',opt.bv_workspace);
+bvr_sendcommand('loadworkspace',opt.eeg.bv_workspace);
 bvr_sendcommand('stoprecording'); % assert that no previous session is running
 
 %% EEG impedance check
@@ -35,23 +35,22 @@ tl_proc_convertBVData(filename,opt);
 tl_mrk_initialCleanup(BTB.Tp.Code,'Phase1');
 tl_proc_registerEMGOnsets(BTB.Tp.Code,'Phase1',0)
 
-%%Validate the data with a quick crossvalidation
-[cnt,mrk,mnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
-mrk = tl_mrk_assembleTrials(mrk,'silent');
-
-%% 
-t_ts2emg = tl_acq_quickInspection(cnt,mrk,mnt);
+%% Inspect data
+t_ts2emg = tl_acq_quickInspection;
 
 %% Compute sliding classifier output, this might take a while...
+[mrk,cnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
+mrk = tl_mrk_assembleTrials(mrk,'phase1');
+mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
 cout = tl_proc_slidingClassification(cnt,mrk);
 
 %% Find and inspect optimal prediction threshold
-tl_acq_findClassifierThreshold(cout);
+tl_proc_findClassifierThreshold(cout);
 
 %% If F-score is lower than .25 --> ABORT!
 
 %% Confirm threshold, train classifier, update BBCI and draw idle interruptions
-pred = tl_acq_findClassifierThreshold(cout);
+pred = tl_proc_findClassifierThreshold(cout);
 opt.pred.thresh = pred.thresh;
 
 mrk = tl_mrk_setIdleMoveMarkers(mrk);

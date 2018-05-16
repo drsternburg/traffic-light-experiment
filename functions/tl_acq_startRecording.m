@@ -1,5 +1,6 @@
 
 function tl_acq_startRecording(block_name,bbci)
+% Executes a recording block
 
 global BTB opt
 

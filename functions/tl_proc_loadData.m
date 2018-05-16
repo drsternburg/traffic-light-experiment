@@ -15,10 +15,17 @@ ds_list = dir(BTB.MatDir);
 ds_idx = strncmp(subj_code,{ds_list.name},5);
 ds_name = ds_list(ds_idx).name;
 
-fprintf('Loading data set %s, %s...\n',ds_name,phase_name)
-
 filename_eeg = sprintf('%s/%s_%s_%s',ds_name,opt.session_name,phase_name,subj_code);
 filename_mrk = sprintf('%s%s_mrk.mat',BTB.MatDir,filename_eeg);
+
+if not(exist(filename_eeg,'file'))
+    mrk = [];
+    cnt = [];
+    mnt = [];
+    return
+end
+
+fprintf('Loading data set %s, %s...\n',ds_name,phase_name)
 
 if nargout>1 || not(exist(filename_mrk,'file'))
     [cnt,mrk,mnt] = file_loadMatlab(filename_eeg);

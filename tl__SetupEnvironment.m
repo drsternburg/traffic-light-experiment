@@ -2,10 +2,7 @@
 global BTB opt
 opt = struct;
 
-%% names
 opt.session_name = 'TrafficLight';
-opt.bv_workspace = 'C:\Vision\Workfiles\IntentionPrompting_motor';
-opt.nr_eeg_chans = 30;
 
 %%
 addpath(genpath([BTB.PrivateDir '\traffic-light-experiment']))
@@ -22,6 +19,8 @@ BTB.Acq.StartLetter = 'a';
 BTB.FigPos = [1 1];
 
 %% parameters for raw data
+opt.eeg.nr_eeg_chans = 30;
+opt.eeg.bv_workspace = 'C:\Vision\Workfiles\IntentionPrompting_motor';
 opt.eeg.orig_fs = 1000;
 Wps = [42 49]/opt.eeg.orig_fs*2;
 [n,Ws] = cheb2ord(Wps(1),Wps(2),3,40);
@@ -66,7 +65,7 @@ opt.cfy.min_ts2emg = -opt.cfy.fv_window(1)*2+500;
 % for the fake classifier of phase 1:
 opt.cfy.C.gamma = randn;
 opt.cfy.C.b = randn;
-opt.cfy.C.w = randn(size(opt.cfy.fv_ivals,1)*opt.nr_eeg_chans,1);
+opt.cfy.C.w = randn(size(opt.cfy.fv_ivals,1)*opt.eeg.nr_eeg_chans,1);
 
 %% parameters for finding optimal prediction threshold
 opt.pred.tp_ival = [-600 -100];

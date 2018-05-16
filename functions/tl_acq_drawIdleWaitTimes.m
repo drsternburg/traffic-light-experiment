@@ -1,6 +1,6 @@
 
 function wt = tl_acq_drawIdleWaitTimes(n,t)
-% n : number of WTs
+% n : number of WTs to draw
 % t : either 1x2 vector with [WT_min WT_max],
 %     or a vector with collected waiting times from which the 10 and 90
 %     percentiles are used to determine [WT_min WT_max]
