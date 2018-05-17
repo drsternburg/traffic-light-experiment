@@ -1,5 +1,7 @@
 
 function trial_mrk = tl_mrk_getTrialMarkers(mrk)
+% Returns the cell trial_mrk that in each entry contains the marker indices
+% of single trials, relative to the complete set of markers.
 
 global opt
 

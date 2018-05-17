@@ -5,9 +5,9 @@ opt = struct;
 opt.session_name = 'TrafficLight';
 
 %%
-addpath(genpath([BTB.PrivateDir '\traffic-light-experiment']))
-addpath(genpath([BTB.PrivateDir '\traffic-light-experiment\functions']))
-addpath(genpath([BTB.PrivateDir '\traffic-light-experiment\acquisition']))
+addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment'))
+addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment','functions'))
+addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment','acquisition'))
 
 %%
 BTB.Acq.Geometry = [1281 1 1280 998];

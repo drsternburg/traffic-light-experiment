@@ -14,7 +14,7 @@ bvr_sendcommand('stoprecording'); % assert that no previous session is running
 
 %% EEG impedance check
 bvr_sendcommand('checkimpedances');
-stimutil_waitForInput('Msg', 'Finished to prepare the cap?');
+stimutil_waitForInput('Msg','Finished to prepare the cap?');
 bvr_sendcommand('viewsignals');
 
 %% Test the triggers
