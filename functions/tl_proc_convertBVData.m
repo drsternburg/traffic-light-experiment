@@ -4,11 +4,8 @@ function [cnt,mrk,mnt] = tl_proc_convertBVData(file)
 global opt
 
 % define channels
-%rrclab = {'not','E*'};
 hdr = file_readBVheader(file);
 noninfclab = ['not' hdr.clab(isinf(hdr.impedances))];
-%noninfclab = '*';
-%noninfclab = opt.cfy.clab;
 
 % read raw data
 [cnt,mrk] = file_readBV(file,'fs',opt.eeg.fs,'filt',opt.eeg.filt,'clab',noninfclab);

@@ -1,6 +1,4 @@
 
-%% setup environment
-tl__SetupEnvironment;
 global opt
 warning off
 
@@ -45,15 +43,11 @@ mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
 cout = tl_proc_slidingClassification(cnt,mrk);
 
 %% Find and inspect optimal prediction threshold
+%opt.pred.tp_ival = [-600 -100];
 tl_proc_findClassifierThreshold(cout);
 
-%% If F-score is lower than .25 --> ABORT!
-
 %% Confirm threshold, train classifier, update BBCI and draw idle interruptions
-pred = tl_proc_findClassifierThreshold(cout);
-opt.pred.thresh = pred.thresh;
-
-mrk = tl_mrk_setIdleMoveMarkers(mrk);
+mrk = tl_mrk_setClassifierMarkers(mrk);
 fv = tl_proc_extractFeatures(cnt,mrk);
 opt.cfy.C = train_RLDAshrink(fv.x,fv.y);
 

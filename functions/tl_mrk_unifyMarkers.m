@@ -1,6 +1,6 @@
 
 function mrk = tl_mrk_unifyMarkers(mrk,type)
-% Unifies certain sets of markers
+% Unifies marker families
 
 switch type
     case 'start'

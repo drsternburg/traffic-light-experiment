@@ -116,6 +116,8 @@ opt.feedback.pyff_params(4).pause_every_x_events = int16(20); % 4 pauses
 trial_assignment = tl_acq_drawTrialAssignments(1000,[.25 .25 .25 .25]); % MOVE and IDLE interruptions with equal rates
 opt.feedback.pyff_params(4).trial_assignment = int16(trial_assignment);
 
+%%
+clear trial_assignment fv_ivals Wps Ws n
 
 
 
