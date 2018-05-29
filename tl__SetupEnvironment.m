@@ -78,46 +78,57 @@ opt.fig.pred_edges = -2500:100:300;
 %% feedback parameters
 opt.feedback.name  = 'TrafficLight';
 
-opt.feedback.blocks = {'Training1','Phase1','Training3','Phase2'};
+opt.feedback.blocks = {'Training1','Phase1','Training2','Phase2','RT'};
 
-opt.feedback.rec_params(1).record_audio = 0;
-opt.feedback.rec_params(1).save_opt = 0;
-opt.feedback.pyff_params(1).listen_to_keyboard = int16(0); % turn off keyboard mode
-opt.feedback.pyff_params(1).make_interruptions = int16(0); % no interruptions
-opt.feedback.pyff_params(1).end_pause_counter_type = int16(1); % button presses
-opt.feedback.pyff_params(1).end_after_x_events = int16(10); % 10
-opt.feedback.pyff_params(1).pause_every_x_events = int16(10); % no pause
+record_audio = [0 0 1 1 0];
+listen_to_keyboard = [0 0 0 0 0];
+make_interruptions = [0 0 1 1 1];
 
-opt.feedback.rec_params(2).record_audio = 0;
-opt.feedback.rec_params(2).save_opt = 1;
-opt.feedback.pyff_params(2).listen_to_keyboard = int16(0); % turn off keyboard mode
-opt.feedback.pyff_params(2).make_interruptions = int16(0); % no interruptions
-opt.feedback.pyff_params(2).end_pause_counter_type = int16(1); % button presses
-opt.feedback.pyff_params(2).end_after_x_events = int16(100); % 100
-opt.feedback.pyff_params(2).pause_every_x_events = int16(20); % 4 pauses
+end_pause_counter_type = [1 % button presses
+                          1 % button presses
+                          3 % idle lights
+                          4 % seconds 
+                          3 % idle lights
+                          ];
+end_after_x_events = [10
+                      100
+                      10
+                      60*60
+                      50
+                      ];
+                  
+pause_every_x_events = [10
+                        20
+                        10
+                        15*60
+                        50
+                        ];
 
-opt.feedback.rec_params(3).record_audio = 1;
-opt.feedback.rec_params(3).save_opt = 0;
-opt.feedback.pyff_params(3).listen_to_keyboard = int16(0); % turn off keyboard mode
-opt.feedback.pyff_params(3).make_interruptions = int16(1); % elicit interruptions
-opt.feedback.pyff_params(3).end_pause_counter_type = int16(3); % IDLE interruptions
-opt.feedback.pyff_params(3).end_after_x_events = int16(10); % 10
-opt.feedback.pyff_params(3).pause_every_x_events = int16(10); % no pause
-trial_assignment = tl_acq_drawTrialAssignments(100,[0 0 .5 .5]); % only IDLE interruptions
-opt.feedback.pyff_params(3).trial_assignment = int16(trial_assignment);
+bci_delayed_idle = [0 0 0 1 0];
 
-opt.feedback.rec_params(4).record_audio = 1;
-opt.feedback.rec_params(4).save_opt = 1;
-opt.feedback.pyff_params(4).listen_to_keyboard = int16(0); % turn off keyboard mode
-opt.feedback.pyff_params(4).make_interruptions = int16(1); % elicit interruptions
-opt.feedback.pyff_params(4).end_pause_counter_type = int16(2); % MOVE interruptions
-opt.feedback.pyff_params(4).end_after_x_events = int16(100); % 100
-opt.feedback.pyff_params(4).pause_every_x_events = int16(20); % 4 pauses
-trial_assignment = tl_acq_drawTrialAssignments(1000,[.25 .25 .25 .25]); % MOVE and IDLE interruptions with equal rates
-opt.feedback.pyff_params(4).trial_assignment = int16(trial_assignment);
+trial_assignment = {[],...
+                    [],...
+                    tl_acq_drawTrialAssignments(100,[0 0 .5 .5]),...
+                    tl_acq_drawTrialAssignments(1500,[.25 .25 .25 .25]),...
+                    tl_acq_drawTrialAssignments(100,[0 0 0 1])};
+
+for ii = 1:length(opt.feedback.blocks)
+    
+    opt.feedback.rec_params(ii).record_audio = int16(record_audio(ii));
+    opt.feedback.pyff_params(ii).listen_to_keyboard = int16(listen_to_keyboard(ii));
+    opt.feedback.pyff_params(ii).make_interruptions = int16(make_interruptions(ii));
+    opt.feedback.pyff_params(ii).end_pause_counter_type = int16(end_pause_counter_type(ii));
+    opt.feedback.pyff_params(ii).end_after_x_events = int16(end_after_x_events(ii));
+    opt.feedback.pyff_params(ii).pause_every_x_events = int16(pause_every_x_events(ii));
+    opt.feedback.pyff_params(ii).bci_delayed_idle = int16(bci_delayed_idle(ii));
+    if not(isempty(trial_assignment{ii}))
+        opt.feedback.pyff_params(ii).trial_assignment = trial_assignment{ii};
+    end
+    
+end
 
 %%
-clear trial_assignment fv_ivals Wps Ws n
+clear trial_assignment fv_ivals Wps Ws n record_audio save_opt listen_to_keyboard make_interruptions end_after_x_events end_pause_counter_type pause_every_x_events
 
 
 

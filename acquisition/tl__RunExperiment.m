@@ -46,23 +46,27 @@ cout = tl_proc_slidingClassification(cnt,mrk);
 %opt.pred.tp_ival = [-600 -100];
 tl_proc_findClassifierThreshold(cout);
 
-%% Confirm threshold, train classifier, update BBCI and draw idle interruptions
+%% Confirm threshold, train classifier and update BBCI
 mrk = tl_mrk_setClassifierMarkers(mrk);
 fv = tl_proc_extractFeatures(cnt,mrk);
 opt.cfy.C = train_RLDAshrink(fv.x,fv.y);
-
 bbci = tl_bbci_setup;
 
-opt.feedback.pyff_params(3).ir_idle_waittime = tl_acq_drawIdleWaitTimes(100,t_ts2emg);
-opt.feedback.pyff_params(4).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,t_ts2emg);
-
 %% Training for Phase 2
+opt.feedback.pyff_params(3).ir_idle_waittime = tl_acq_drawIdleWaitTimes(100,t_ts2emg);
 tl_startRecording('Training2',bbci)
 
 %% Phase 2
+opt.feedback.pyff_params(4).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,t_ts2emg);
 tl_startRecording('Phase2',bbci)
 
+%% Reaction Time
+opt.feedback.pyff_params(5).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,[2000 6000]);
+tl_startRecording('Phase2',bbci)
 
+%% Save options struct
+optfile = [fullfile(BTB.Tp.Dir,opt.session_name) '_' BTB.Tp.Code '_opt'];
+save(optfile,'opt')
 
 
 
