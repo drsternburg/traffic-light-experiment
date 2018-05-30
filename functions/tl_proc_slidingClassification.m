@@ -15,7 +15,7 @@ for ii = 1:n_trial
     if not(exist('C','var'))
         %% train
         mrk_train = mrk_selectEvents(mrk,'not',i_trial(:,ii));
-        mrk_train = tl_mrk_setIdleMoveMarkers(mrk_train);
+        mrk_train = tl_mrk_setClassifierMarkers(mrk_train);
         fv = tl_proc_extractFeatures(cnt,mrk_train);
         C = train_RLDAshrink(fv.x,fv.y);
     end

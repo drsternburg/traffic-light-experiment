@@ -11,7 +11,7 @@ mrk = tl_mrk_selectTrials(mrk);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset'});
 
 %% cross-validation
-mrk_ = tl_mrk_setIdleMoveMarkers(mrk);
+mrk_ = tl_mrk_setClassifierMarkers(mrk);
 fv = tl_proc_extractFeatures(cnt,mrk_);
 loss = crossvalidation(fv,@train_RLDAshrink,'SampleFcn',{@sample_KFold,[3 10]});
 acc = 100*(1-loss);

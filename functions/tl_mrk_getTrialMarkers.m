@@ -10,6 +10,7 @@ mrk = tl_mrk_unifyMarkers(mrk,'start');
 ci_ts = find(strcmp(mrk.className,'start'));
 ci_te = find(strcmp(mrk.className,'trial end'));
 ci_bp = find(strcmp(mrk.className,'button press'));
+mrk = mrk_sortChronologically(mrk);
 
 % extract markers
 idx = 1;
