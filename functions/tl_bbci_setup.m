@@ -29,7 +29,7 @@ bbci.feedback(1).receiver= 'pyff';
 bbci.feedback(2).control= 2;
 bbci.feedback(2).receiver= 'pyff';
 
-bbci.quit_condition.marker = 255;
+bbci.quit_condition.marker = -255;
 
 bbci.log.output = 'screen&file';
 bbci.log.filebase = '~/bbci/log/log';

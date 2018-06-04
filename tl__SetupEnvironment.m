@@ -5,6 +5,7 @@ opt = struct;
 opt.session_name = 'TrafficLight';
 
 %%
+BTB.PrivateDir = 'C:\bbci';
 addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment'))
 addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment','functions'))
 addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment','acquisition'))
@@ -20,7 +21,7 @@ BTB.FigPos = [1 1];
 
 %% parameters for raw data
 opt.eeg.nr_eeg_chans = 30;
-opt.eeg.bv_workspace = 'C:\Vision\Workfiles\IntentionPrompting_motor';
+opt.eeg.bv_workspace = 'C:\Vision\Workfiles\TrafficLight';
 opt.eeg.orig_fs = 1000;
 Wps = [42 49]/opt.eeg.orig_fs*2;
 [n,Ws] = cheb2ord(Wps(1),Wps(2),3,40);
@@ -70,7 +71,9 @@ opt.cfy.C.w = randn(size(opt.cfy.fv_ivals,1)*opt.eeg.nr_eeg_chans,1);
 %% parameters for finding optimal prediction threshold
 opt.pred.tp_ival = [-600 -100];
 opt.pred.fscore_beta = .5;
-opt.pred.thresh = 0; % for the fake classifier of phase 1
+opt.pred.thresh_move = 10; % for the fake classifier of phase 1
+opt.pred.thresh_idle = -10; % for the fake classifier of phase 1
+opt.pred.wt_prctl = [10 75];
 
 %% figure parameters
 opt.fig.pred_edges = -2500:100:300;
@@ -83,52 +86,54 @@ opt.feedback.blocks = {'Training1','Phase1','Training2','Phase2','RT'};
 record_audio = [0 0 1 1 0];
 listen_to_keyboard = [0 0 0 0 0];
 make_interruptions = [0 0 1 1 1];
+make_prompts = [0 0 1 1 0];
 
 end_pause_counter_type = [1 % button presses
                           1 % button presses
-                          3 % idle lights
+                          4 % seconds
                           4 % seconds 
-                          3 % idle lights
+                          4 % seconds
                           ];
 end_after_x_events = [10
                       100
-                      10
+                      1*60
                       60*60
-                      50
+                      8*60
                       ];
                   
 pause_every_x_events = [10
                         20
-                        10
+                        1*60
                         15*60
-                        50
+                        4*60
                         ];
 
 bci_delayed_idle = [0 0 0 1 0];
 
-trial_assignment = {[],...
-                    [],...
+trial_assignment = {1,...
+                    1,...
                     tl_acq_drawTrialAssignments(100,[0 0 .5 .5]),...
                     tl_acq_drawTrialAssignments(1500,[.25 .25 .25 .25]),...
                     tl_acq_drawTrialAssignments(100,[0 0 0 1])};
 
 for ii = 1:length(opt.feedback.blocks)
     
-    opt.feedback.rec_params(ii).record_audio = int16(record_audio(ii));
+    opt.feedback.rec_params(ii).record_audio = record_audio(ii);
     opt.feedback.pyff_params(ii).listen_to_keyboard = int16(listen_to_keyboard(ii));
     opt.feedback.pyff_params(ii).make_interruptions = int16(make_interruptions(ii));
+    opt.feedback.pyff_params(ii).make_prompts = int16(make_prompts(ii));
     opt.feedback.pyff_params(ii).end_pause_counter_type = int16(end_pause_counter_type(ii));
     opt.feedback.pyff_params(ii).end_after_x_events = int16(end_after_x_events(ii));
     opt.feedback.pyff_params(ii).pause_every_x_events = int16(pause_every_x_events(ii));
     opt.feedback.pyff_params(ii).bci_delayed_idle = int16(bci_delayed_idle(ii));
     if not(isempty(trial_assignment{ii}))
-        opt.feedback.pyff_params(ii).trial_assignment = trial_assignment{ii};
+        opt.feedback.pyff_params(ii).trial_assignment = int16(trial_assignment{ii});
     end
     
 end
 
 %%
-clear trial_assignment fv_ivals Wps Ws n record_audio save_opt listen_to_keyboard make_interruptions end_after_x_events end_pause_counter_type pause_every_x_events
+clear trial_assignment fv_ivals Wps Ws n record_audio save_opt listen_to_keyboard make_interruptions end_after_x_events end_pause_counter_type pause_every_x_events bci_delayed_idle ii
 
 
 

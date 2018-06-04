@@ -133,12 +133,16 @@ mrk2.time = t_emg;
 mrk2.y = ones(1,length(t_emg));
 mrk2.className = {'EMG onset'};
 mrk = mrk_mergeMarkers(mrk,mrk2);
+mrk = mrk_sortChronologically(mrk);
 
 %% cleanup lost button presses
 trials = tl_mrk_analyzeTrials(mrk);
-trial_mrk = tl_mrk_getTrialMarkers(mrk,trials.event.button_press&~trials.event.emg_onset);
-mrk = mrk_selectEvents(mrk,'not',[trial_mrk{:}]);
-fprintf('%d trials removed with lost button presses.\n',length(ind))
+trial_ind = tl_mrk_getTrialMarkers(mrk);
+trial_ind = trial_ind(trials.button_press&~trials.emg_onset);
+if not(isempty(trial_ind))
+    mrk = mrk_selectEvents(mrk,'not',[trial_ind{:}]);
+    fprintf('%d trials removed with lost button presses.\n',length(ind))
+end
 
 %% save new marker struct
 global BTB

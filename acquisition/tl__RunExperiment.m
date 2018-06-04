@@ -8,7 +8,7 @@ acq_makeDataFolder;
 %% Start BrainVision Recorder and load workspace
 system('C:\Vision\Recorder\Recorder.exe &'); pause(8);
 bvr_sendcommand('loadworkspace',opt.eeg.bv_workspace);
-bvr_sendcommand('stoprecording'); % assert that no previous session is running
+bvr_sendcommand('stoprecording');
 
 %% EEG impedance check
 bvr_sendcommand('checkimpedances');
@@ -28,6 +28,7 @@ tl_acq_startRecording('Training1',bbci)
 tl_acq_startRecording('Phase1',bbci)
 
 %% Preprocess
+basename = sprintf('%s_%s_',opt.session_name,'Phase1');
 filename = [BTB.Tp.Dir(17:end) '\' basename BTB.Tp.Code];
 tl_proc_convertBVData(filename);
 tl_mrk_initialCleanup(BTB.Tp.Code,'Phase1');
@@ -38,12 +39,13 @@ t_ts2emg = tl_acq_quickInspection;
 
 %% Compute sliding classifier output, this might take a while...
 [mrk,cnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
-mrk = tl_mrk_selectTrials(mrk);
+trial = tl_mrk_analyzeTrials(mrk);
+mrk = tl_mrk_selectTrials(mrk,trial.emg_onset);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
 cout = tl_proc_slidingClassification(cnt,mrk);
 
 %% Find and inspect optimal prediction threshold
-%opt.pred.tp_ival = [-600 -100];
+opt.pred.tp_ival = [-600 -100];
 tl_proc_findClassifierThreshold(cout);
 
 %% Confirm threshold, train classifier and update BBCI
@@ -54,15 +56,15 @@ bbci = tl_bbci_setup;
 
 %% Training for Phase 2
 opt.feedback.pyff_params(3).ir_idle_waittime = tl_acq_drawIdleWaitTimes(100,t_ts2emg);
-tl_startRecording('Training2',bbci)
+tl_acq_startRecording('Training2',bbci)
 
 %% Phase 2
 opt.feedback.pyff_params(4).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,t_ts2emg);
-tl_startRecording('Phase2',bbci)
+tl_acq_startRecording('Phase2',bbci)
 
 %% Reaction Time
-opt.feedback.pyff_params(5).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,[2000 6000]);
-tl_startRecording('Phase2',bbci)
+opt.feedback.pyff_params(5).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,[2000 5000]);
+tl_acq_startRecording('RT',bbci)
 
 %% Save options struct
 optfile = [fullfile(BTB.Tp.Dir,opt.session_name) '_' BTB.Tp.Code '_opt'];
