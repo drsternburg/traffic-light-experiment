@@ -6,9 +6,11 @@ function wt = tl_acq_drawIdleWaitTimes(n,t)
 %     percentiles are used to determine [WT_min WT_max]
 % wt: 1xn vector with WTs
 
+global opt
+
 if length(t)==2
     wt_mnmx = t;
 else
-    wt_mnmx = percentiles(t,[10 90]);
+    wt_mnmx = percentiles(t,opt.pred.wt_prctl);
 end
 wt = rand(1,n)*(diff(wt_mnmx))+wt_mnmx(1);

@@ -73,6 +73,7 @@ opt.pred.tp_ival = [-600 -100];
 opt.pred.fscore_beta = .5;
 opt.pred.thresh_move = 10; % for the fake classifier of phase 1
 opt.pred.thresh_idle = -10; % for the fake classifier of phase 1
+opt.pred.wt_prctl = [10 75];
 
 %% figure parameters
 opt.fig.pred_edges = -2500:100:300;
@@ -85,25 +86,26 @@ opt.feedback.blocks = {'Training1','Phase1','Training2','Phase2','RT'};
 record_audio = [0 0 1 1 0];
 listen_to_keyboard = [0 0 0 0 0];
 make_interruptions = [0 0 1 1 1];
+make_prompts = [0 0 1 1 0];
 
 end_pause_counter_type = [1 % button presses
                           1 % button presses
-                          3 % idle lights
+                          4 % seconds
                           4 % seconds 
-                          3 % idle lights
+                          4 % seconds
                           ];
 end_after_x_events = [10
                       100
-                      10
+                      1*60
                       60*60
-                      50
+                      8*60
                       ];
                   
 pause_every_x_events = [10
                         20
-                        10
+                        1*60
                         15*60
-                        50
+                        4*60
                         ];
 
 bci_delayed_idle = [0 0 0 1 0];
@@ -119,6 +121,7 @@ for ii = 1:length(opt.feedback.blocks)
     opt.feedback.rec_params(ii).record_audio = record_audio(ii);
     opt.feedback.pyff_params(ii).listen_to_keyboard = int16(listen_to_keyboard(ii));
     opt.feedback.pyff_params(ii).make_interruptions = int16(make_interruptions(ii));
+    opt.feedback.pyff_params(ii).make_prompts = int16(make_prompts(ii));
     opt.feedback.pyff_params(ii).end_pause_counter_type = int16(end_pause_counter_type(ii));
     opt.feedback.pyff_params(ii).end_after_x_events = int16(end_after_x_events(ii));
     opt.feedback.pyff_params(ii).pause_every_x_events = int16(pause_every_x_events(ii));

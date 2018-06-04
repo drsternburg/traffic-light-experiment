@@ -8,7 +8,7 @@ acq_makeDataFolder;
 %% Start BrainVision Recorder and load workspace
 system('C:\Vision\Recorder\Recorder.exe &'); pause(8);
 bvr_sendcommand('loadworkspace',opt.eeg.bv_workspace);
-bvr_sendcommand('stoprecording'); % assert that no previous session is running
+bvr_sendcommand('stoprecording');
 
 %% EEG impedance check
 bvr_sendcommand('checkimpedances');
@@ -39,7 +39,8 @@ t_ts2emg = tl_acq_quickInspection;
 
 %% Compute sliding classifier output, this might take a while...
 [mrk,cnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
-mrk = tl_mrk_selectTrials(mrk);
+trial = tl_mrk_analyzeTrials(mrk);
+mrk = tl_mrk_selectTrials(mrk,trial.emg_onset);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
 cout = tl_proc_slidingClassification(cnt,mrk);
 
@@ -63,7 +64,7 @@ tl_acq_startRecording('Phase2',bbci)
 
 %% Reaction Time
 opt.feedback.pyff_params(5).ir_idle_waittime = tl_acq_drawIdleWaitTimes(1000,[2000 5000]);
-tl_startRecording('RT',bbci)
+tl_acq_startRecording('RT',bbci)
 
 %% Save options struct
 optfile = [fullfile(BTB.Tp.Dir,opt.session_name) '_' BTB.Tp.Code '_opt'];

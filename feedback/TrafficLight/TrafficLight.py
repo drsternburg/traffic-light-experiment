@@ -56,7 +56,7 @@ class TrafficLight(PygameFeedback):
         ########################################################################
         
         self.duration_light_yellow = 1000
-        self.duration_light_redgreen = 1000
+        self.duration_light_redgreen = 1300
         self.duration_prompt = 1500
         self.duration_cross = 3000
         self.min_waittime = 1500
@@ -80,6 +80,7 @@ class TrafficLight(PygameFeedback):
         
         self.listen_to_keyboard = 1
         self.make_interruptions = 1
+        self.make_prompts = 0
         self.pause_every_x_events = 20
         self.end_after_x_events = 60
         self.end_pause_counter_type = 4 # 1 - button presses, 2 - move lights, 3 - idle lights, 4 - seconds
@@ -148,11 +149,11 @@ class TrafficLight(PygameFeedback):
         if not self.paused:
             if now > self.time_trial_end: # it's time to end trial
                 # however, first check if we want to prompt
-                if self.make_interruptions and not self.this_prompt and not self.already_pressed and self.already_interrupted and self.this_interruption_color=='red':
+                if self.make_interruptions and self.make_prompts and not self.this_prompt and not self.already_pressed and self.already_interrupted and self.this_interruption_color=='red':
                     self.send_parallel_log(self.marker_prompt)
                     self.this_prompt = True
                     self.time_trial_end = now + self.duration_prompt
-                elif self.make_interruptions and not self.this_prompt and self.already_pressed and self.already_interrupted and self.this_interruption_color=='green':
+                elif self.make_interruptions and self.make_prompts and not self.this_prompt and self.already_pressed and self.already_interrupted and self.this_interruption_color=='green':
                     self.send_parallel_log(self.marker_prompt)
                     self.this_prompt = True
                     self.time_trial_end = now + self.duration_prompt
@@ -170,7 +171,7 @@ class TrafficLight(PygameFeedback):
                     self.send_parallel(self.marker_quit)
                     self.on_stop()
                 # ... or to pause
-                if self.count_events() - self.pause_every_x_events*self.block_counter >= self.pause_every_x_events:
+                elif self.count_events() - self.pause_every_x_events*self.block_counter >= self.pause_every_x_events:
                     self.block_counter += 1
                     self.on_pause()
                 # otherwise, start new trial
