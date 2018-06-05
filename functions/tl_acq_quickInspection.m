@@ -1,16 +1,13 @@
 
-function t_ts2emg = tl_acq_quickInspection
+function t_ts2emg = tl_acq_quickInspection(subj_code)
 % Performs a quick inspection of recorded Phase1 data and returns the
 % waiting times
 
-global BTB
-
 %% prepare data
-[mrk,cnt,mnt] = tl_proc_loadData(BTB.Tp.Code,'Phase1');
+[mrk,cnt,mnt] = tl_proc_loadData(subj_code,'Phase1');
 trial = tl_mrk_analyzeTrials(mrk);
 mrk = tl_mrk_selectTrials(mrk,trial.emg_onset);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset'});
-
 
 %% cross-validation
 mrk_ = tl_mrk_setClassifierMarkers(mrk);

@@ -1,11 +1,13 @@
 
 global BTB opt
-opt = struct;
 
+opt = struct;
 opt.session_name = 'TrafficLight';
 
 %%
-BTB.PrivateDir = 'C:\bbci';
+if ispc
+    BTB.PrivateDir = 'C:\bbci';
+end
 addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment'))
 addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment','functions'))
 addpath(fullfile(BTB.PrivateDir,'traffic-light-experiment','acquisition'))
@@ -59,7 +61,7 @@ opt.cfy.baseln_pos = 'end';
 opt.cfy.fv_ivals = fv_ivals;
 opt.cfy.fv_window = [opt.cfy.fv_ivals(1)-10 0];
 opt.cfy.clab = {'not','E*'};
-opt.cfy.idle_mode = 'optimal';
+opt.cfy.idle_mode = 'trial start';
 opt.cfy.idle_offset = -opt.cfy.fv_window(1);
 opt.cfy.min_ts2emg = -opt.cfy.fv_window(1)*2+500;
 

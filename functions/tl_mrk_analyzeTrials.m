@@ -56,15 +56,19 @@ for ii = 1:N
             trial.green(ii) = true;
     end
     
-    % movement
+    % EMG onset
     if any(strcmp(mrk_this.className,'EMG onset'))
         trial.emg_onset(ii) = true;
         % waiting time
         mrk_ = mrk_selectClasses(mrk_this,{this_start,'EMG onset'});
         trial.t_ts2emg(ii) = mrk_.time(logical(mrk_.y(2,:)))-mrk_.time(logical(mrk_.y(1,:)));
-        if any(strcmp(mrk_this.className,'button press'))
-            trial.button_press(ii) = true;
-            % movement duration
+    end
+    
+    % button press
+    if any(strcmp(mrk_this.className,'button press'))
+        trial.button_press(ii) = true;
+        % movement duration
+        if trial.emg_onset(ii)
             mrk_ = mrk_selectClasses(mrk_this,{'EMG onset','button press'});
             trial.t_emg2bp(ii) = mrk_.time(logical(mrk_.y(2,:)))-mrk_.time(logical(mrk_.y(1,:)));
         end
