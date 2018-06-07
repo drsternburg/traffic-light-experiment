@@ -1,7 +1,7 @@
 
 warning off
 
-subj_code = 'VPtaa';
+subj_code = 'VPtab';
 [mrk,cnt] = tl_proc_loadData(subj_code);
 trial = tl_mrk_analyzeTrials(mrk);
 BTB.FigPos = [55 4]; % internally for MSK

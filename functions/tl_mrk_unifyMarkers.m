@@ -1,16 +1,17 @@
 
-function mrk = tl_mrk_unifyMarkers(mrk,type)
+function mrk = tl_mrk_unifyMarkers(mrk,type,cl_target)
 % Unifies marker families
 
 switch type
     case 'start'
-        cl_orig = {'start move red','start move green','start idle red','start idle green','start phase1'};
-        cl_target = 'start';
+        cl_orig = {'start move red','start move green','start idle red','start idle green','start phase1','start rt'};
     case 'light'
         cl_orig = {'light move red','light move green','light idle red','light idle green'};
-        cl_target = 'light';
     otherwise
         error('Unknown unification indentifier.')
+end
+if nargin < 3
+    cl_target = type;
 end
 
 ci_orig = [];

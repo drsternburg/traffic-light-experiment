@@ -1,5 +1,5 @@
 
-function tl_proc_registerResponses(subj_code)
+function tl_proc_registerResponses(subj_code,offset)
 
 global BTB opt
 ds_list = dir(BTB.RawDir);
@@ -21,8 +21,8 @@ jj = 1;
 mrk_resp.y = nan(1,length(t_pr));
 mrk_resp.time = nan(1,length(t_pr));
 while jj<=length(t_pr)
-    a = round((t_pr(jj)-.5)*fs);
-    b = min(round((t_pr(jj)+1.5)*fs),n_smpl);
+    a = round((t_pr(jj)+offset)*fs);
+    b = min(round((t_pr(jj)+offset+2.5)*fs),n_smpl);
     y = audioread(wavfile,[a b]);
     sound(y,fs);
     r = input(sprintf('Prompt %d/%d, response: ',jj,length(t_pr)),'s');

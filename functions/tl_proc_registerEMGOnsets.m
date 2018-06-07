@@ -1,5 +1,5 @@
 
-function tl_proc_registerEMGOnsets2(subj_code,phase_name,interactive)
+function tl_proc_registerEMGOnsets(subj_code,phase_name,interactive)
 
 global opt
 
@@ -30,7 +30,7 @@ if interactive
     tl_fig_init;
     %ylim = [-1 1]*max(abs(cnt.x));
     ylim = [0 max(abs(cnt.x))];
-    trial_events = ['button press' opt.mrk.def(2,7:11)];
+    trial_events = ['button press' opt.mrk.def(2,7:11) 'light rt'];
     clrs = lines(length(trial_events)+1);
 end
 
@@ -60,7 +60,7 @@ while ii<=n_trial
 %     else
 %         i_emg = 1; % else (aborted or no movement), start detection from beginning of trial
 %     end
-    i_emg = 1;
+    i_emg = opt.emg.wlen_bsln/10 + 1;
     
     % detect first 50ms window where SD > 3.5*SD_baseline
     detected = false;
@@ -74,7 +74,8 @@ while ii<=n_trial
     end
     
     if detected
-        t_emg_ = epo.t(i_emg) + opt.emg.wlen_det/2; % add half the detection window
+        %t_emg_ = epo.t(i_emg) + opt.emg.wlen_det/2; % add half the detection window
+        t_emg_ = epo.t(i_emg);
     else
         ii = ii+1;
         continue
@@ -114,11 +115,17 @@ while ii<=n_trial
         else
             t_emg(ii) = t_emg_+t_ts;
         end
+        
     else % no interaction
-        t_emg(ii) = t_emg_+t_ts;     
+        
+        t_emg(ii) = t_emg_+t_ts;
+        
     end
+    
     ii = ii+1;
+    
 end
+
 fprintf('%d EMG onsets assigned to %d trials.\n',sum(not(isnan(t_emg))),n_trial)
 close gcf
 

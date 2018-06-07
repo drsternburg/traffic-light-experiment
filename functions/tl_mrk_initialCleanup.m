@@ -26,6 +26,12 @@ end
 mrk = mrk_selectEvents(mrk,'not',remove,'RemoveVoidClasses',0);
 fprintf('%d trailing BPs removed.\n',numel(remove))
 
+% rename markers in RT block
+if strcmp(phase_name,'RT')
+    mrk = tl_mrk_unifyMarkers(mrk,'start','start rt');
+    mrk = tl_mrk_unifyMarkers(mrk,'light','light rt');
+end
+
 % save new marker struct
 save(filename,'mrk')
 

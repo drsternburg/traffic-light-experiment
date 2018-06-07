@@ -11,6 +11,7 @@ N = length(trial_ind);
 %%
 % binary indicators:
 trial.phase1 = false(1,N);              % phase1 trial
+trial.rt = false(1,N);                  % reaction time trial
 trial.move = false(1,N);                % move trial (both red and green)
 trial.idle = false(1,N);                % idle trial (both red and green)
 trial.red = false(1,N);                 % red trial (both move and idle)
@@ -42,6 +43,8 @@ for ii = 1:N
     switch this_type
         case 'phase1'
             trial.phase1(ii) = true;
+        case 'rt'
+            trial.rt(ii) = true;
         case 'move red'
             trial.move(ii) = true;
             trial.red(ii) = true;
