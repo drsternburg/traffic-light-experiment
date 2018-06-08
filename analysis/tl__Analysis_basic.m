@@ -1,11 +1,11 @@
 
-warning off
+subj_code = 'VPtab';
 
-subj_code = 'VPtae';
+%%
+warning off
 [mrk,cnt,mnt] = tl_proc_loadData(subj_code);
 trial = tl_mrk_analyzeTrials(mrk);
 BTB.FigPos = [55 4]; % internally for MSK
-
 
 %% (1) SILENT interruptions distribution
 
@@ -128,7 +128,7 @@ title('Red Move Interruptions')
 set(gca,'box','on')
 legend('yes','no','location','west')
 
-%%
+%% GREEN YES vs. GREEN NO
 ind1 = trial.green & trial.prompted & trial.yes & trial.emg_onset;
 ind2 = trial.green & trial.prompted & trial.no & trial.emg_onset;
 
@@ -244,28 +244,91 @@ erp = proc_selectChannels(erp,'not','EMG');
 erp = proc_baseline(erp,100,'beginning');
 rsq = proc_rSquareSigned(erp);
 
-tl_fig_init;
-plot_channel(erp,'Cz');
+%tl_fig_init;
+%plot_channel(erp,'Cz');
 
 tl_fig_init;
 H = grid_plot(erp,mnt);
 grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
 
-%%
-tl_fig_init; hold on
-t = 1/cnt.fs:1/cnt.fs:size(cnt.x,1)/cnt.fs;
-plot(t,cnt.x(:,8))
-mrk1 = mrk_selectClasses(mrk,'EMG onset');
-for ii = 1:length(mrk1.time)
-    plot([1 1]*mrk1.time(ii)/1000,ylim,'r')
-end
+%% RESPONSES
 
+% trial indices
+ind_GMY = trial.green & trial.move & trial.prompted & trial.yes;
+ind_GMN = trial.green & trial.move & trial.prompted & trial.no;
+ind_GIY = trial.green & trial.idle & trial.prompted & trial.yes;
+ind_GIN = trial.green & trial.idle & trial.prompted & trial.no;
+ind_RMY = trial.red & trial.move & trial.prompted & trial.yes;
+ind_RMN = trial.red & trial.move & trial.prompted & trial.no;
+ind_RIY = trial.red & trial.idle & trial.prompted & trial.yes;
+ind_RIN = trial.red & trial.idle & trial.prompted & trial.no;
 
+% numbers
+n_GMY = sum(ind_GMY);
+n_GMN = sum(ind_GMN);
+n_GIY = sum(ind_GIY);
+n_GIN = sum(ind_GIN);
+n_RMY = sum(ind_RMY);
+n_RMN = sum(ind_RMN);
+n_RIY = sum(ind_RIY);
+n_RIN = sum(ind_RIN);
 
+% YES ratios
+% GREEN
+r_GM = n_GMY / (n_GMY+n_GMN);
+r_GI = n_GIY / (n_GIY+n_GIN);
+r_G  = (n_GMY+n_GIY) / (n_GMY+n_GMN+n_GIY+n_GIN);
+% RED
+r_RM = n_RMY / (n_RMY+n_RMN);
+r_RI = n_RIY / (n_RIY+n_RIN);
+r_R  = (n_RMY+n_RIY) / (n_RMY+n_RMN+n_RIY+n_RIN);
+% MOVE
+r_M  = (n_GMY+n_RMY) / (n_GMY+n_RMY+n_GMN+n_RMN);
+% IDLE
+r_I  = (n_GIY+n_RIY) / (n_GIY+n_RIY+n_GIN+n_RIN);
 
+% plot ratios
+tl_fig_init;
+clrs = lines(10);
+ylim = [0 80];
 
+subplot 131
+bh = bar([r_GM r_RM;r_GI r_RI]*100);
+bh(1).FaceColor = clrs(5,:);
+bh(2).FaceColor = clrs(2,:);
+set(gca,'xticklabel',{'MOVE','IDLE'},'ylim',ylim)
+ylabel('%')
 
+subplot 132
+bh = bar([r_M r_I]*100);
+bh.FaceColor = clrs(1,:);
+set(gca,'xticklabel',{'MOVE','IDLE'},'ylim',ylim)
+ylabel('%')
 
+subplot 133
+bh = bar([r_G r_R]*100);
+bh.FaceColor = clrs(1,:);
+set(gca,'xticklabel',{'GREEN','RED'},'ylim',ylim)
+ylabel('%')
+
+%% plot P300 MOVE vs. IDLE
+mrk1 = tl_mrk_selectTrials(mrk,ind_GMY|ind_GMN|ind_RMY|ind_RMN);
+mrk1 = tl_mrk_unifyMarkers(mrk1,'light');
+mrk1 = mrk_selectClasses(mrk1,'light');
+mrk1.className = {'MOVE'};
+mrk2 = tl_mrk_selectTrials(mrk,ind_GIY|ind_GIN|ind_RIY|ind_RIN);
+mrk2 = tl_mrk_unifyMarkers(mrk2,'light');
+mrk2 = mrk_selectClasses(mrk2,'light');
+mrk2.className = {'IDLE'};
+mrk12 = mrk_mergeMarkers(mrk1,mrk2);
+
+erp = proc_segmentation(cnt,mrk12,[-100 800]);
+erp = proc_baseline(erp,100,'beginning');
+rsq = proc_rSquareSigned(erp);
+
+tl_fig_init;
+H = grid_plot(erp,mnt);
+grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
 
 
 
