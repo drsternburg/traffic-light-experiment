@@ -1,5 +1,5 @@
 
-subj_code = 'VPtab';
+subj_code = 'VPtaf';
 
 %%
 warning off
@@ -30,11 +30,9 @@ subplot(3,4,3), hold on
 
 % (a) waiting time
 t1 = trial.t_ts2emg(ind1);
-%t1(logical(t1>1000)) = [];
 t2 = trial.t_ts2emg(ind2);
-%t2(logical(t2>1000)) = [];
-histogram(t1/1000,'normalization','probability')
-histogram(t2/1000,'normalization','probability')
+histogram(t1/1000)%,'normalization','probability')
+histogram(t2/1000)%,'normalization','probability')
 lh = legend('Phase1','Phase2');
 set(lh,'box','off')
 set(gca,'box','on')
@@ -48,8 +46,8 @@ t1 = trial.t_emg2bp(ind1);
 t1(logical(t1>1000)) = [];
 t2 = trial.t_emg2bp(ind2);
 t2(logical(t2>1000)) = [];
-histogram(t1,'normalization','probability')
-histogram(t2,'normalization','probability')
+histogram(t1)%,'normalization','probability')
+histogram(t2)%,'normalization','probability')
 lh = legend('Phase1','Phase2');
 set(lh,'box','off')
 set(gca,'box','on')
@@ -66,8 +64,8 @@ t2 = trial.t_emg2int(ind2);
 
 subplot(3,4,5), hold on
 
-histogram(t1,opt.fig.pred_edges,'normalization','probability')
-histogram(t2,opt.fig.pred_edges,'normalization','probability')
+histogram(t1,opt.fig.pred_edges)%,'normalization','probability')
+histogram(t2,opt.fig.pred_edges)%,'normalization','probability')
 plot([0 0],get(gca,'ylim'),'k--','linewidth',2)
 lh = legend('YES','NO','location','northwest');
 set(lh,'box','off')
@@ -79,13 +77,15 @@ set(gca,'box','on')
 
 % (b) Movement duration
 t1 = trial.t_emg2bp(ind1);
+t1(logical(t1>1000)) = [];
 t2 = trial.t_emg2bp(ind2);
+t2(logical(t2>1000)) = [];
 [~,edges] = histcounts([t1 t2],'binmethod','scott');
 
 subplot(3,4,6), hold on
 
-histogram(t1,edges,'normalization','probability')
-histogram(t2,edges,'normalization','probability')
+histogram(t1,edges)%,'normalization','probability')
+histogram(t2,edges)%,'normalization','probability')
 lh = legend('yes','no','location','northeast');
 set(lh,'box','off')
 xlabel('EMG onset to button press (ms)')
@@ -139,7 +139,7 @@ t3 = trial.t_emg2int(ind3);
 
 subplot(3,4,9), hold on
 
-histogram(t3,opt.fig.pred_edges,'normalization','probability')
+histogram(t3,opt.fig.pred_edges)%,'normalization','probability')
 plot([0 0],get(gca,'ylim'),'k--','linewidth',2)
 set(gca,'xlim',[-1000 opt.fig.pred_edges(end)])
 xlabel('Time to EMG onset (ms)')
@@ -211,8 +211,6 @@ bh.FaceColor = clrs(1,:);
 set(gca,'xtick',[1 2],'xticklabel',{'GREEN','RED'},'ylim',ylim,'box','on')
 ylabel('%')
 grid on
-
-
 
 
 

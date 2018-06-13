@@ -78,7 +78,7 @@ opt.pred.thresh_idle = -10; % for the fake classifier of phase 1
 opt.pred.wt_prctl = [10 75];
 
 %% figure parameters
-opt.fig.pred_edges = -2500:100:500;
+opt.fig.pred_edges = -2500:100:800;
 
 %% feedback parameters
 opt.feedback.name  = 'TrafficLight';

@@ -1,6 +1,8 @@
 
+warning off
+
 %%
-ds_name = 'VPtah_18_06_07';
+ds_name = 'VPtak_18_06_12';
 subj_code = ds_name(1:5);
 
 %%
@@ -23,7 +25,7 @@ tl_mrk_initialCleanup(subj_code,phase_name);
 %%
 tl_proc_registerEMGOnsets(subj_code,phase_name,0);
 %%
-tl_proc_registerResponses(subj_code,12);
+%tl_proc_registerResponses(subj_code,12.5);
 
 %%
 phase_name = 'RT';

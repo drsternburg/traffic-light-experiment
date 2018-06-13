@@ -38,16 +38,17 @@ mrk2 = mrk_selectClasses(mrk2,'EMG onset');
 mrk2.className = {'Green No EMG onset'};
 
 mrk12 = mrk_mergeMarkers(mrk1,mrk2);
-erp = proc_segmentation(cnt,mrk12,[-2000 200]);
+erp = proc_segmentation(cnt,mrk12,[-1500 0]);
 erp = proc_baseline(erp,100,'beginning');
 rsq = proc_rSquareSigned(erp);
 
 tl_fig_init;
 H = grid_plot(erp,mnt);
 grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
+print(gcf,'-dpdf',sprintf('../figures/Green-Yes-vs-No_Movement-locked_%s',subj_code))
 
 %% GREEN YES vs. GREEN NO: Light locked
-ind1 = trial.green & trial.move & trial.prompted & trial.yes & trial.emg_onset;
+ind1 = trial.green & trial.move & trial.prompted & trial.yes & trial.emg_onset & trial.t_emg2int<0;
 ind2 = trial.green & trial.move & trial.prompted & trial.no & trial.emg_onset;
 
 mrk1 = tl_mrk_selectTrials(mrk,ind1);
@@ -61,13 +62,14 @@ mrk2 = mrk_selectClasses(mrk2,'light');
 mrk2.className = {'Green Light No'};
 
 mrk12 = mrk_mergeMarkers(mrk1,mrk2);
-erp = proc_segmentation(cnt,mrk12,[-1500 200]);
+erp = proc_segmentation(cnt,mrk12,[-1000 200]);
 erp = proc_baseline(erp,100,'beginning');
 rsq = proc_rSquareSigned(erp);
 
 tl_fig_init;
 H = grid_plot(erp,mnt);
 grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
+print(gcf,'-dpdf',sprintf('../figures/Green-Yes-vs-No_Light-locked_%s',subj_code))
 
 %% ERP: self-paced vs. cued
 ind1 = trial.phase1;
@@ -89,6 +91,7 @@ rsq = proc_rSquareSigned(erp);
 tl_fig_init;
 H = grid_plot(erp,mnt);
 grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
+print(gcf,'-dpdf',sprintf('../figures/Selfpaced-vs-Cued_%s',subj_code))
 
 %% ERP: MOVE vs. IDLE
 ind1 = trial.move & trial.interrupted;
@@ -105,7 +108,9 @@ mrk2 = mrk_selectClasses(mrk2,'light');
 mrk2.className = {'IDLE Light'};
 
 mrk12 = mrk_mergeMarkers(mrk1,mrk2);
-erp = proc_segmentation(cnt,mrk12,[-1500 200]);
+
+% (a) signal preceding light
+erp = proc_segmentation(cnt,mrk12,[-1500 0]);
 erp = proc_selectChannels(erp,'not','EMG');
 erp = proc_baseline(erp,100,'beginning');
 rsq = proc_rSquareSigned(erp);
@@ -113,39 +118,18 @@ rsq = proc_rSquareSigned(erp);
 tl_fig_init;
 H = grid_plot(erp,mnt);
 grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
+print(gcf,'-dpdf',sprintf('../figures/Move-vs-Idle_preceding-light_%s',subj_code))
 
-%% RESPONSES
-
-% trial indices
-ind_GMY = trial.green & trial.move & trial.prompted & trial.yes;
-ind_GMN = trial.green & trial.move & trial.prompted & trial.no;
-ind_GIY = trial.green & trial.idle & trial.prompted & trial.yes;
-ind_GIN = trial.green & trial.idle & trial.prompted & trial.no;
-ind_RMY = trial.red & trial.move & trial.prompted & trial.yes;
-ind_RMN = trial.red & trial.move & trial.prompted & trial.no;
-ind_RIY = trial.red & trial.idle & trial.prompted & trial.yes;
-ind_RIN = trial.red & trial.idle & trial.prompted & trial.no;
-
-% plot P300 MOVE vs. IDLE
-mrk1 = tl_mrk_selectTrials(mrk,ind_GMY|ind_GMN|ind_RMY|ind_RMN);
-mrk1 = tl_mrk_unifyMarkers(mrk1,'light');
-mrk1 = mrk_selectClasses(mrk1,'light');
-mrk1.className = {'MOVE'};
-mrk2 = tl_mrk_selectTrials(mrk,ind_GIY|ind_GIN|ind_RIY|ind_RIN);
-mrk2 = tl_mrk_unifyMarkers(mrk2,'light');
-mrk2 = mrk_selectClasses(mrk2,'light');
-mrk2.className = {'IDLE'};
-mrk12 = mrk_mergeMarkers(mrk1,mrk2);
-
+% (b) signal succeeding light
 erp = proc_segmentation(cnt,mrk12,[-100 800]);
+erp = proc_selectChannels(erp,'not','EMG');
 erp = proc_baseline(erp,100,'beginning');
 rsq = proc_rSquareSigned(erp);
 
 tl_fig_init;
 H = grid_plot(erp,mnt);
 grid_addBars(rsq,'HScale',H.scale,'Height',1/8);
-
-
+print(gcf,'-dpdf',sprintf('../figures/Move-vs-Idle_succeeding-light_%s',subj_code))
 
 
 

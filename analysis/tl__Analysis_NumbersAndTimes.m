@@ -1,7 +1,7 @@
 
 warning off
 
-subj_code = 'VPtae';
+subj_code = 'VPtai';
 [mrk,cnt,mnt] = tl_proc_loadData(subj_code);
 trial = tl_mrk_analyzeTrials(mrk);
 BTB.FigPos = [55 4]; % internally for MSK
@@ -214,8 +214,17 @@ bh.FaceColor = clrs(1,:);
 set(gca,'xticklabel',{'GREEN','RED'},'ylim',ylim)
 ylabel('%')
 
+%% COVERT VETOS
+ind_IY = trial.red & trial.idle & trial.interrupted & ~trial.emg_onset & ~trial.button_press & trial.yes;
+ind_IN = trial.red & trial.idle & trial.interrupted & ~trial.emg_onset & ~trial.button_press & trial.no;
+ind_MY = trial.red & trial.move & trial.interrupted & ~trial.emg_onset & ~trial.button_press & trial.yes;
+ind_MN = trial.red & trial.move & trial.interrupted & ~trial.emg_onset & ~trial.button_press & trial.no;
 
+r_I = sum(ind_IY)/sum([ind_IY ind_IN]);
+r_M = sum(ind_MY)/sum([ind_MY ind_MN]);
 
+tl_fig_init;
+bar([r_I r_M])
 
 
 
