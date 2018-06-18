@@ -42,7 +42,7 @@ t_ts2emg = tl_acq_quickInspection;
 trial = tl_mrk_analyzeTrials(mrk);
 mrk = tl_mrk_selectTrials(mrk,trial.emg_onset);
 mrk = mrk_selectClasses(mrk,{'start phase1','EMG onset','trial end'});
-cout = tl_proc_slidingClassification(cnt,mrk);
+cout = tl_proc_slidingClassification2(cnt,mrk);
 
 %% Find and inspect optimal prediction threshold
 opt.pred.tp_ival = [-600 -100];

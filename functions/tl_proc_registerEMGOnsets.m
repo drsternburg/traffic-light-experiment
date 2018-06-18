@@ -17,13 +17,13 @@ i_ts = cellfun(@(v)v(1),trial_mrk);
 i_te = cellfun(@(v)v(end),trial_mrk);
 n_trial = length(i_ts);
 
-%% compute average EMG signal in first 1000ms of all trials
+%% get median standard deviation of EMG signal in first 1000ms of all trials
 sd_bsln = zeros(opt.emg.wlen_bsln/10,length(i_ts));
 for ii = 1:length(i_ts)
     epo = proc_segmentation(cnt,mrk_selectEvents(mrk,i_ts(ii)),[0 opt.emg.wlen_bsln]);
     sd_bsln(:,ii) = epo.x;
 end
-sd_bsln = std(sd_bsln(:));
+sd_bsln = sqrt(median(var(sd_bsln,1)));
 
 %%
 if interactive

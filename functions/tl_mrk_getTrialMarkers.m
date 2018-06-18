@@ -9,7 +9,7 @@ mrk = mrk_sortChronologically(mrk);
 mrk = tl_mrk_unifyMarkers(mrk,'start');
 ci_ts = find(strcmp(mrk.className,'start'));
 ci_te = find(strcmp(mrk.className,'trial end'));
-ci_bp = find(strcmp(mrk.className,'button press'));
+ci_emg = find(strcmp(mrk.className,'EMG onset'));
 mrk = mrk_sortChronologically(mrk);
 
 % extract markers
@@ -28,9 +28,9 @@ while idx<length(mrk.time)
             end
             idx = idx+1;
         end
-        if ismember(ci_bp,class_idx)
-            t_ts2bp = mrk.time(event_idx(logical(ci_bp==class_idx)))-mrk.time(event_idx(1));
-            if t_ts2bp < opt.mrk.min_ts2bp
+        if ismember(ci_emg,class_idx)
+            t_ts2emg = mrk.time(event_idx(logical(ci_emg==class_idx)))-mrk.time(event_idx(1));
+            if t_ts2emg < opt.mrk.min_ts2emg
                 continue
             end
         end

@@ -1,5 +1,5 @@
 
-subj_code = 'VPtab';
+subj_code = 'VPtal';
 
 warning off
 [mrk,cnt,mnt] = tl_proc_loadData(subj_code);
