@@ -38,3 +38,4 @@ if incell
 else
     mrk = mrk_selectEvents(mrk,[ind_all{ind_sel}]);
 end
+mrk = mrk_sortChronologically(mrk);

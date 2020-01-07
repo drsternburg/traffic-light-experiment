@@ -1,10 +1,14 @@
 
-function tl_proc_registerEMGOnsets(subj_code,phase_name,interactive)
+function tl_proc_registerEMGOnsets(subj_code,phase_name,interactive,plot_events)
 
 global opt
 
+if not(exist('plot_events','var'))
+    plot_events = false;
+end
+
 [mrk,cnt] = tl_proc_loadData(subj_code,phase_name);
-mrk = mrk_selectClasses(mrk,'not','EMG onset','RemoveVoidClasses',0); % in case EMG onset have already been registered
+mrk = mrk_selectClasses(mrk,'not','EMG onset','RemoveVoidClasses',0); % in case EMG onsets have already been registered
 
 %% prepare EMG data
 cnt = proc_selectChannels(cnt,'EMG');
@@ -29,7 +33,7 @@ sd_bsln = sqrt(median(var(sd_bsln,1)));
 if interactive
     tl_fig_init;
     %ylim = [-1 1]*max(abs(cnt.x));
-    ylim = [0 max(abs(cnt.x))];
+    ylim = [0 prctile(abs(cnt.x),99.9)];
     trial_events = ['button press' opt.mrk.def(2,7:11) 'light rt'];
     clrs = lines(length(trial_events)+1);
 end
@@ -53,29 +57,25 @@ while ii<=n_trial
         ev_time(jj-1) = mrk_.time - t_ts;
         ev_name(jj-1) = mrk_.className;
     end
-    t_bp = ev_time(strcmp(ev_name,'button press'));
-    
-%     if not(isempty(t_bp))
-%         i_emg = round(t_bp/10) - 150; % if there is a button press, start detection 800ms before button press
-%     else
-%         i_emg = 1; % else (aborted or no movement), start detection from beginning of trial
-%     end
-    i_emg = opt.emg.wlen_bsln/10 + 1;
     
     % detect first 50ms window where SD > 3.5*SD_baseline
+    i_start = opt.emg.wlen_minWT/10 + 1;
+    i_emg = i_start;
     detected = false;
     while i_emg+wlen_det<=length(epo.x)
         sd = std(epo.x(i_emg:i_emg+wlen_det-1));
         if sd>sd_bsln*opt.emg.sd_fac
-            detected = true;
+            if not(i_emg==i_start)
+                detected = true;
+            end
             break
         end
         i_emg = i_emg+1;
     end
     
     if detected
-        %t_emg_ = epo.t(i_emg) + opt.emg.wlen_det/2; % add half the detection window
-        t_emg_ = epo.t(i_emg);
+        t_emg_ = epo.t(i_emg) + opt.emg.wlen_det/2; % add half the detection window
+        %t_emg_ = epo.t(i_emg);
     else
         ii = ii+1;
         continue
@@ -90,26 +90,38 @@ while ii<=n_trial
         hold on
         plot([1 1]*t_emg_,ylim,'color',clrs(end,:),'linewidth',2)
         
-        % plot events within trial
-        h = [];
-        for jj = 1:length(ev_time)
-            i_clr = find(strcmp(ev_name{jj},trial_events));
-            if not(isempty(i_clr))
-                h = [h plot([1 1]*(ev_time(jj)),ylim,'--','color',clrs(i_clr,:),'linewidth',1.5)];
+        if plot_events
+            % plot events within trial
+            h = [];
+            for jj = 1:length(ev_time)
+                i_clr = find(strcmp(ev_name{jj},trial_events));
+                if not(isempty(i_clr))
+                    h = [h plot([1 1]*(ev_time(jj)),ylim,'--','color',clrs(i_clr,:),'linewidth',1.5)];
+                    tpos = ylim(2)-ylim(2)*.1*jj;
+                    text(ev_time(jj))
+                end
             end
+            %legend(h,ev_name,'location','northwest')
         end
-        legend(h,ev_name,'location','northwest')
         set(gca,'ylim',ylim,'xlim',[0 t_te-t_ts])
         
         % prompt for input
         r = input(sprintf('Detected automatically: %4.1f ms; accept (ENTER) or new: ',t_emg_),'s');
         clf
         if not(isempty(r))
-            r = str2num(r);
-            if not(isempty(r)) % number entered
-                t_emg(ii) = r+t_ts;
-            else % character entered -> rewind
+            if not(isempty(str2num(r))) % number entered
+                t_emg(ii) = str2num(r)+t_ts;
+            elseif strcmp(r,'r') % rewind by one trial
                 ii = ii-1;
+                continue
+            elseif strcmp(r,'f') % fast-forward (interrupt interactive mode)
+                interactive = false;
+                t_emg(ii) = t_emg_+t_ts;
+                ii = ii+1;
+                continue
+            elseif strcmp(r,'d') % dismiss trial
+                t_emg(ii) = NaN;
+                ii = ii+1;
                 continue
             end
         else

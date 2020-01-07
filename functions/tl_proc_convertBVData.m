@@ -5,7 +5,11 @@ global opt
 
 % define channels
 hdr = file_readBVheader(file);
-noninfclab = ['not' hdr.clab(isinf(hdr.impedances))];
+if isfield(hdr,'impedances')
+    noninfclab = ['not' hdr.clab(isinf(hdr.impedances))];
+else
+    noninfclab = '*';
+end
 
 % read raw data
 [cnt,mrk] = file_readBV(file,'fs',opt.eeg.fs,'filt',opt.eeg.filt,'clab',noninfclab);

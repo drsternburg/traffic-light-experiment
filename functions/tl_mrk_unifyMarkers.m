@@ -4,9 +4,13 @@ function mrk = tl_mrk_unifyMarkers(mrk,type,cl_target)
 
 switch type
     case 'start'
-        cl_orig = {'start move red','start move green','start idle red','start idle green','start phase1','start rt'};
+        cl_orig = {'start move red','start move green','start idle red','start idle green','start phase1','start rt','start'};
     case 'light'
-        cl_orig = {'light move red','light move green','light idle red','light idle green'};
+        cl_orig = {'light move red','light move green','light idle red','light idle green','light rt'};
+    case 'light move'
+        cl_orig = {'light move red','light move green'};
+    case 'light idle'
+        cl_orig = {'light idle red','light idle green'};
     otherwise
         error('Unknown unification indentifier.')
 end

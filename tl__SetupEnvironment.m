@@ -1,4 +1,5 @@
 
+warning off
 global BTB opt
 
 opt = struct;
@@ -48,10 +49,10 @@ opt.mrk.def = {  2 'button press';...
                }';
 
 %% parameters for finding EMG onsets
-opt.emg.emg2bp_range = [150 700]; % ms
 opt.emg.wlen_bsln = 1000; % ms
-opt.emg.wlen_det = 50; % ms
-opt.emg.sd_fac = 3.5;
+opt.emg.wlen_det = 100; % ms
+opt.emg.wlen_minWT = 1300; % ms
+opt.emg.sd_fac = 10;
 
 %% parameters for classification
 fv_ivals = fliplr(-[0 50 100 200 300 450 650 900 1200]);
@@ -135,7 +136,7 @@ for ii = 1:length(opt.feedback.blocks)
 end
 
 %%
-clear trial_assignment fv_ivals Wps Ws n record_audio save_opt listen_to_keyboard make_interruptions end_after_x_events end_pause_counter_type pause_every_x_events bci_delayed_idle ii
+clear trial_assignment fv_ivals Wps Ws n record_audio save_opt listen_to_keyboard make_interruptions end_after_x_events end_pause_counter_type pause_every_x_events bci_delayed_idle ii make_prompts
 
 
 

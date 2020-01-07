@@ -90,6 +90,9 @@ edges = [floor(min(t_pr2emg)/100)*100 ...
          ceil(max(t_pr2emg)/100)*100];
 for ii = 1:length(edges)-1
     edges2 = edges(ii):100:edges(ii+1);
+    if isempty(edges2)
+        continue
+    end
     if verLessThan('matlab', '8.4')
         counts = histc(t_pr2emg,edges2);
         counts = counts(1:end-1);

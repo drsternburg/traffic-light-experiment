@@ -3,7 +3,8 @@ function trial_mrk = tl_mrk_getTrialMarkers(mrk)
 % Returns the cell trial_mrk that in each entry contains the marker indices
 % of single trials, relative to the complete set of markers.
 
-global opt
+%min_ts2emg = 1300;
+min_ts2emg = 0;
 
 mrk = mrk_sortChronologically(mrk);
 mrk = tl_mrk_unifyMarkers(mrk,'start');
@@ -30,7 +31,7 @@ while idx<length(mrk.time)
         end
         if ismember(ci_emg,class_idx)
             t_ts2emg = mrk.time(event_idx(logical(ci_emg==class_idx)))-mrk.time(event_idx(1));
-            if t_ts2emg < opt.mrk.min_ts2emg
+            if t_ts2emg < min_ts2emg
                 continue
             end
         end

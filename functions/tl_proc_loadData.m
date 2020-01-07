@@ -14,13 +14,14 @@ if nargin<2
     return
 end
 
-global BTB opt
+global BTB
 
 ds_list = dir(BTB.MatDir);
 ds_idx = strncmp(subj_code,{ds_list.name},5);
 ds_name = ds_list(ds_idx).name;
+session_name = 'TrafficLight';
 
-filename_eeg = sprintf('%s/%s_%s_%s',ds_name,opt.session_name,phase_name,subj_code);
+filename_eeg = sprintf('%s/%s_%s_%s',ds_name,session_name,phase_name,subj_code);
 filename_mrk = sprintf('%s%s_mrk.mat',BTB.MatDir,filename_eeg);
 
 if not(exist([BTB.MatDir filename_eeg '.mat'],'file')) % because for one or two participants we didn't record RT data
